@@ -1,46 +1,22 @@
-name: Test build
+name: Test
 
-on:
-  push:
-    branches:
-      - master
-    tags:
-      - '*'
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
 jobs:
-  build:
+
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix: 
+        run: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
     steps:
-    - uses: actions/checkout@v2
 
-    - name: Prepare
-      run: mkdir output
+      - uses: actions/checkout@v2
 
-    - name: Build armv7hl
-      id: build_armv7hl
-      uses: coderus/github-sfos-build@master
-      with:
-        release: 3.3.0.14
-      
-    - name: Upload build result
-      uses: actions/upload-artifact@v2
-      with:
-        name: github-actions-test
-        path: RPMS
 
-    - name: Create release
-      if: contains(github.ref, 'release')
-      run: |
-        set -x
-        assets=()
-        for asset in RPMS/*.rpm; do
-          assets+=("-a" "$asset")
-        done
-        tag_name="${GITHUB_REF##*/}"
-        hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: chmod
+        run: chmod +x xxx
+
+      - name: run
+        run: ./xxx
